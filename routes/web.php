@@ -11,30 +11,46 @@
 |
 */
 
+use Laravel\Lumen\Routing\Router;
+
 /**
- * @var Laravel\Lumen\Routing\Router $router
+ * @var Router $router
  */
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
 // API route group
-$router->group(['prefix' => 'api'], function () use ($router) {
+$router->group(['prefix' => 'api'], function() use($router) {
     $router->post('login', 'Auth\AuthController@login');
 
-    $router->group(['middleware' => ['jwt.verify']], function () use($router) {
+    $router->group(['middleware' => ['jwt.verify']], function() use($router) {
         $router->get('me', 'Auth\AuthController@me');
         $router->get('logout', 'Auth\AuthController@logout');
 
-        $router->group(['prefix' => 'v1'], function () use ($router) {
+        $router->group(['prefix' => 'v1'], function() use($router) {
 
             // Authors
-            $router->get('authors', 'V1\Author\AuthorController@index');
-            $router->get('authors/{author}', 'V1\Author\AuthorController@show');
-            $router->post('authors', 'V1\Author\AuthorController@store');
-            $router->put('authors/{author}', 'V1\Author\AuthorController@update');
-            $router->patch('authors/{author}', 'V1\Author\AuthorController@restore');
-            $router->delete('authors/{author}', 'V1\Author\AuthorController@destroy');
+            setAuthorsRoute($router);
         });
     });
 });
+
+
+/**
+ * Rutas para autores
+ *
+ * @param Router $router
+ */
+function setAuthorsRoute(Router $router){
+    $url = 'authors';
+    $urlWithSlug = "{$url}/{author}";
+    $controller = 'V1\Author\AuthorController';
+
+    $router->get($url, "{$controller}@index");
+    $router->get($urlWithSlug, "{$controller}@show");
+    $router->post($url, "{$controller}@store");
+    $router->put($urlWithSlug, "{$controller}@update");
+    $router->patch($urlWithSlug, "{$controller}@restore");
+    $router->delete($url, "{$controller}@destroy");
+}

@@ -13,7 +13,8 @@
         "urameshibr/lumen-form-request": "^1.5",
         "mmghv/lumen-route-binding": "^1.5",
         "yajra/laravel-datatables-oracle": "8.*",
-        "yajra/laravel-datatables-fractal": "^1.5"
+        "yajra/laravel-datatables-fractal": "^1.5",
+        "vluzrmos/lumen-cors": "^2.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
