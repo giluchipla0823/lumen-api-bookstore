@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 class AppHelper
 {
+    CONST ENVIRONMENT_PRODUCTION = 'production';
     CONST REQUEST_KEY_DATATABLE = 'listFormat';
     CONST REQUEST_VALUE_DATATABLE = 'datatables';
 

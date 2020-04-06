@@ -2,6 +2,8 @@
 
 namespace App\Libraries;
 
+use App\Helpers\AppHelper;
+use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class Api {
@@ -29,13 +31,31 @@ class Api {
         self::IDX_STR_JSON_MESSAGE => 'OK',
     );
 
-    public function makeResponse(?string $message, int $status, int $code, array $extra = []){
+    /**
+     * Estructura de respuesta JSON
+     *
+     * @param object|array|null $data
+     * @param string $message
+     * @param int $code
+     * @param int $status
+     * @param array $extras
+     * @return array
+     */
+    public function makeResponse($data, string $message, int $status, int $code, array $extras = []): array {
         $response = $this->response;
 
         $response[self::IDX_STR_JSON_CODE] = $code;
         $response[self::IDX_STR_JSON_MESSAGE] = $message;
 
-        foreach ($extra as $key => $value){
+        if(!is_null($data)){
+            $response[self::IDX_STR_JSON_DATA] = $data;
+        }
+
+        foreach ($extras as $key => $value){
+            if(config('app.env') === AppHelper::ENVIRONMENT_PRODUCTION && $key === 'exception'){
+                continue;
+            }
+
             $response[$key] = $value;
         }
 

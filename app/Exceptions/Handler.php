@@ -24,6 +24,8 @@ class Handler extends ExceptionHandler
 {
     use ApiResponse;
 
+    public $dataException;
+
     /**
      * A list of the exception types that should not be reported.
      *
@@ -37,6 +39,8 @@ class Handler extends ExceptionHandler
         TokenMismatchException::class,
         ValidationException::class
     ];
+
+
 
     /**
      * Report or log an exception.
@@ -61,13 +65,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-
-        // dd(config('app.debug'));
-
-
-        //if (config('app.debug')) {
+        if (config('app.debug')) {
             return parent::render($request, $exception);
-        // }
+        }
+
+        $this->resolveDataException($exception);
 
         if($exception instanceof ValidationException){
             return $this->convertValidationExceptionToResponse($exception, $request);
@@ -122,12 +124,32 @@ class Handler extends ExceptionHandler
             );
         }
 
+        if($exception instanceof Exception){
+            return $this->errorResponse(
+                $exception->getMessage(),
+                $exception->getCode()
+            );
+        }
+
         return $this->errorResponse(
             'Falla inesperada. Intente luego',
             Response::HTTP_INTERNAL_SERVER_ERROR
         );
     }
 
+    /**
+     * Resolver los valores de excepción a mostrar en la
+     * respuesta de error en formato JSON
+     *
+     * @param $exception
+     */
+    protected function resolveDataException($exception){
+        $this->dataException = [
+            'class' => get_class($exception),
+            'file' => $exception->getFile(),
+            'line' => $exception->getLine()
+        ];
+    }
 
     /**
      * Convert an authentication exception into an unauthenticated response.
@@ -143,7 +165,6 @@ class Handler extends ExceptionHandler
             Response::HTTP_UNAUTHORIZED
         );
     }
-
 
     /**
      * Create a response object from the given validation exception.

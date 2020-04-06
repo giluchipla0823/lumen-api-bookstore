@@ -95,17 +95,17 @@ Trait ApiResponse{
      * @return JsonResponse
      */
     protected function makeResponse($data, string $message, int $code, int $status, array $extras = []) {
-        $response = (new Api)->makeResponse(
-            $message,
-            $status,
-            $code
-        );
-
-        if(!is_null($data)){
-            $response[Api::IDX_STR_JSON_DATA] = $data;
+        if(property_exists($this, 'dataException')){
+            $extras = array_merge($extras, ['exception' => $this->dataException]);
         }
 
-        $response = array_merge($response, $extras);
+        $response = (new Api)->makeResponse(
+            $data,
+            $message,
+            $status,
+            $code,
+            $extras
+        );
 
         return response()->json($response, $code);
     }

@@ -4,8 +4,8 @@ namespace App\Http\Middleware;
 
 use App\Traits\ApiResponse;
 use Closure;
-use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Http\Middleware\BaseMiddleware;
@@ -19,7 +19,8 @@ class JwtMiddleware extends BaseMiddleware
      *
      * @param $request
      * @param Closure $next
-     * @return JsonResponse|mixed
+     * @return mixed|void
+     * @throws JWTException
      */
     public function handle($request, Closure $next)
     {
@@ -33,9 +34,19 @@ class JwtMiddleware extends BaseMiddleware
         return $next($request);
     }
 
+    /**
+     * Mostrar error de JWT
+     *
+     * @param UnauthorizedHttpException $exception
+     * @throws JWTException
+     */
     public function respondException(UnauthorizedHttpException $exception){
+        if(!$exception->getPrevious()){
+            throw $exception;
+        }
+
         $code = $exception->getStatusCode();
-        $message = 'Token not provided';
+        $message = 'Undefined error message for token exception';
 
         if($exception->getPrevious() instanceof TokenInvalidException){
             $message = 'Token invalid';
@@ -45,8 +56,6 @@ class JwtMiddleware extends BaseMiddleware
             $message = 'Token expired';
         }
 
-        return $this->errorResponse($message, $code);
+        throw new JWTException($message, $code);
     }
-
-
 }
