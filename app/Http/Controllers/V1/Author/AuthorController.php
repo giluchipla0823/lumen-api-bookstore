@@ -2,11 +2,12 @@
 namespace App\Http\Controllers\V1\Author;
 
 use App\Http\Controllers\ApiController;
-use App\Http\Requests\AuthorRequest;
+use App\Http\Requests\Author\ListAuthorRequest;
+use App\Http\Requests\Author\StoreAuthorRequest;
+use App\Http\Requests\Author\UpdateAuthorRequest;
 use App\Models\Author;
 use App\Services\AuthorService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthorController extends ApiController
@@ -24,10 +25,10 @@ class AuthorController extends ApiController
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param ListAuthorRequest $request
      * @return JsonResponse
      */
-    public function index(Request $request){
+    public function index(ListAuthorRequest $request){
         $authors = $this->authorService->filter($request);
 
         return $this->showAll($authors);
@@ -36,10 +37,10 @@ class AuthorController extends ApiController
     /**
      * Store a newly created resource in storage.
      *
-     * @param AuthorRequest $request
+     * @param StoreAuthorRequest $request
      * @return JsonResponse
      */
-    public function store(AuthorRequest $request)
+    public function store(StoreAuthorRequest $request)
     {
         $this->authorService->create($request->all());
 
@@ -60,11 +61,11 @@ class AuthorController extends ApiController
     /**
      * Update the specified resource in storage.
      *
-     * @param AuthorRequest $request
+     * @param UpdateAuthorRequest $request
      * @param Author $author
      * @return JsonResponse
      */
-    public function update(AuthorRequest $request, Author $author)
+    public function update(UpdateAuthorRequest $request, Author $author)
     {
         $this->authorService->update($request->all(), $author->id);
 
@@ -90,7 +91,7 @@ class AuthorController extends ApiController
      * @param int $id
      * @return JsonResponse
      */
-    public function restore($id){
+    public function restore(int $id){
 
         $this->authorService->restore($id);
 

@@ -20,7 +20,7 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-// API route group
+// API route groupH
 $router->group(['prefix' => 'api'], function() use($router) {
     $router->post('login', 'Auth\AuthController@login');
 
@@ -32,10 +32,12 @@ $router->group(['prefix' => 'api'], function() use($router) {
 
             // Authors
             setAuthorsRoute($router);
+
+            // Reports
+            $router->get('report/books', 'V1\Report\BookController@index');
         });
     });
 });
-
 
 /**
  * Rutas para autores

@@ -1,10 +1,10 @@
 <?php
 
+namespace App\Http\Requests\Author;
 
-namespace App\Http\Requests;
+use App\Http\Requests\BaseFormRequest;
 
-
-class AuthRequest extends BaseFormRequest
+class StoreAuthorRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,7 @@ class AuthRequest extends BaseFormRequest
     public function rules()
     {
         return [
-            'email' => 'required|string',
-            'password' => 'required|string',
+            'name' => 'required|max:150|unique:authors,name'
         ];
     }
 }

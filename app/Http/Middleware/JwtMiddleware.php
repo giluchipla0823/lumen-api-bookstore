@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Traits\ApiResponse;
 use Closure;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
@@ -24,6 +25,11 @@ class JwtMiddleware extends BaseMiddleware
      */
     public function handle($request, Closure $next)
     {
+        /* @var Request $request */
+        if($token = $request->query->get('token')){
+            $request->headers->add(['Authorization' => "Bearer {$token}"]);
+        }
+
         try {
             $this->authenticate($request);
         }

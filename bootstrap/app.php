@@ -58,14 +58,9 @@ $app->singleton(
 | route or middleware that'll be assigned to some specific routes.
 |
 */
-
-// $app->middleware([
-//    App\Http\Middleware\ExampleMiddleware::class
-// ]);
-
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+$app->middleware([
+    \App\Http\Middleware\CorsMiddleware::class
+]);
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
@@ -94,9 +89,6 @@ $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 
 // Form Request
 $app->register(Urameshibr\Providers\FormRequestServiceProvider::class);
-
-// Spatie Fractal
-// $app->register(\Spatie\Fractal\FractalServiceProvider::class);
 
 // Datatables
 $app->register(Yajra\DataTables\FractalServiceProvider::class);
